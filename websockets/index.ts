@@ -33,10 +33,12 @@ export default function SocketServer(httpServer: http.Server) {
     );
 
     socketIO.sockets.on("connection", (socket) => {
+        console.log({"socketId": socket.id})
         socket.on(SocketEvents.checkIn, async (payload: string) => {
             try {
                 const checkInData: CheckInPayload = parseData(payload);
-                let data: Guest = {
+console.log({"checkIn": checkInData})                
+let data: Guest = {
                     displayName: checkInData.displayName,
                     roomId: checkInData.roomId,
                     uid: socket.id,
@@ -256,6 +258,7 @@ export default function SocketServer(httpServer: http.Server) {
         socket.on(SocketEvents.avatarTransform, async (payload: string) => {
             try {
                 const transformData: AvatarTransform = parseData(payload);
+console.log({"avatarTransform": transformData}) 
                 if(transformData !== undefined){
                     transformData.uid = socket.id;
                     const roomId = await redisService.modifyGuest(transformData);
@@ -271,6 +274,7 @@ export default function SocketServer(httpServer: http.Server) {
         socket.on(SocketEvents.profileUpdate, async (payload: string) => {
             try{
                 const profileUpdate: GuestMetadata = parseData(payload);
+console.log({"profileUpdate": profileUpdate}) 
                 const profileUpdateGuest = await redisService.updateProfile(socket.id, profileUpdate);
                 if(profileUpdateGuest !== undefined){
                     socket.to(profileUpdateGuest.roomId).emit(SocketEvents.profileUpdate, stringifyData(profileUpdateGuest));
@@ -320,6 +324,7 @@ export default function SocketServer(httpServer: http.Server) {
         socket.on(SocketEvents.assetTransform, async (payload: string)=>{
             try{
                 const assetData: AssetTransform = parseData(payload);
+console.log({"assetTransform": assetData}) 
                 const asset: Asset = await redisService.modifyAsset(assetData);
                 socket.to(assetData.roomId).emit(SocketEvents.assetTransform, stringifyData(asset));
             } catch(err) {
