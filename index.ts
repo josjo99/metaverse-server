@@ -16,5 +16,5 @@ const socket = SocketServer(server);
 
 server.listen(port, () => {
   // eslint-disable-next-line no-console
-  console.log(`Metareality space server is listening to port ${port}!`);
+  console.log(`Socket server is listening to port ${port}!`);
 });
